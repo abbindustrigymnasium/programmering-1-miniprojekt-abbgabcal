@@ -5,11 +5,10 @@ from gym.utils import seeding
 from tkinter import *
 master = Tk()
 
+import time
+
 class MouseEnv(gym.Env):
     metadata = {'render.modes': ['human']}
-
-    
-
 
     def __init__(self):
         self.energi=50
@@ -22,23 +21,14 @@ class MouseEnv(gym.Env):
 
         self.w = 10
         self.h = 10
-        self.Map = [[0 for x in range(w)] for y in range(h)] 
+        self.Map = [[0 for x in range(self.w)] for y in range(self.h)] 
         self.food= 1
         self.wall=2
         self.Map[2][2]= self.food
         self.Map[0][1]= self.wall
-        print("Environment Init")
-        
-        
-    
-    def step(self, action): 
-        print("Step taken")
 
-    def render(self, mode="human"):
-        print("Environment render")
-        C = Canvas(master, bg="green", height=600, width=600)
-        C.pack()
-        mainloop()
+        self.C = Canvas(master, bg="green", height=600, width=600)
+        self.C.pack()
         self.distanceY=0
         self.distanceX=0
         self.sizevalue=50
@@ -46,16 +36,87 @@ class MouseEnv(gym.Env):
             for col in range(0,self.h):
                 coord = self.distanceX, self.distanceY, self.distanceX+self.sizevalue, self.distanceY+self.sizevalue #y,x, w, h
                 self.distanceX+=self.sizevalue
-                if col%2==0:
-                        C.create_rectangle(coord, fill="white")
-                elif col%2==1:
-                        C.create_rectangle(coord, fill="gray")
-        self.distanceY+=self.sizevalue
-        self.distanceX=0
+                self.C.create_rectangle(coord, fill="white")
+            self.distanceY+=self.sizevalue
+            self.distanceX=0
+
+        self.text = Text(master, height=2, width=30)
+        self.text.pack()
+
+        self.Mouse=self.C.create_rectangle(self.getcoord(self.mouse[0],self.mouse[1]), fill="brown")
+        
+        print("Environment Init")
+
+    def rs(self, inputval, sizevalue):
+        return inputval*sizevalue
+
+    def getcoord(self, x,y):
+        sizevalue = 50
+        x = self.rs(x, sizevalue)
+        y = self.rs(y, sizevalue)
+        return x, y, x+sizevalue, y+sizevalue
+    
+    def step(self, action):
+        time.sleep(self.speed)
+        steps = [0,0]
+        if action == 0:
+            if self.mouse[1] > 0:
+                self.mouse[1] = self.mouse[1]-1 #Uppåt
+                steps = [0,-1]
+        elif action == 1:
+            if self.mouse[1] < self.h-1:
+                self.mouse[1] = self.mouse[1]+1 #Nedåt
+                steps = [0,1]
+        elif action == 2:
+            if self.mouse[0] > 0:
+                self.mouse[0] = self.mouse[0]-1 #Vänster
+                steps = [-1,0]
+        elif action == 3: 
+            if self.mouse[0] < self.w-1:
+                self.mouse[0] = self.mouse[0]+1 #Höger  
+                steps = [1,0]
+        dx = steps[0] * self.sizevalue
+        dy = steps[1] * self.sizevalue
+        self.C.move(self.Mouse, dx, dy)
+        self.C.update()
+
+        print("Step taken")
+
+    def render(self, mode="human"):
+        print("Environment render")
+        mainloop()
     
     def reset(self):
-        print("Reset")
+        # self.C.delete("all")
+        # self.energi=50
+        # self.mouse= [1,2] 
+        # self.cheeseeaten=0
+        # self.cheeseamount=10
+        # self.currentcheeses=0
+        # self.cheeseplaces=[[3,3],[2,1],[4,5],[7,3],[2,8],[9,1],[5,7],[8,3],[4,1],[2,7],[5,4]]
+        # self.speed=0.2
 
-    # def render(self, mode='human'):
-    #     code
-    
+        # self.w = 10
+        # self.h = 10
+        # self.Map = [[0 for x in range(self.w)] for y in range(self.h)] 
+        # self.food= 1
+        # self.wall=2
+        # self.Map[2][2]= self.food
+        # self.Map[0][1]= self.wall
+
+        # self.distanceY=0
+        # self.distanceX=0
+        # self.sizevalue=50
+        # for row in range(0,self.w): 
+        #     for col in range(0,self.h):
+        #         coord = self.distanceX, self.distanceY, self.distanceX+self.sizevalue, self.distanceY+self.sizevalue #y,x, w, h
+        #         self.distanceX+=self.sizevalue
+        #         self.C.create_rectangle(coord, fill="white")
+        #     self.distanceY+=self.sizevalue
+        #     self.distanceX=0
+
+        # self.text = Text(master, height=2, width=30)
+        # self.text.pack()
+
+        # self.Mouse=self.C.create_rectangle(self.getcoord(self.mouse[0],self.mouse[1]), fill="brown")
+        print("Env reset")
