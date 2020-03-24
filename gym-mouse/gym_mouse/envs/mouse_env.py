@@ -99,8 +99,8 @@ class MouseEnv(gym.Env):
         dy = steps[1] * self.sizevalue
         self.C.move(self.Mouse, dx, dy)
         self.CreateCheese()
-        self.FoundCheese()
         self.C.update()
+        self.FoundCheese()
 
         print("Step taken")
 
