@@ -6,6 +6,7 @@ from tkinter import *
 master = Tk()
 
 import time
+from random import randint
 
 class MouseEnv(gym.Env):
     metadata = {'render.modes': ['human']}
@@ -55,6 +56,25 @@ class MouseEnv(gym.Env):
         x = self.rs(x, sizevalue)
         y = self.rs(y, sizevalue)
         return x, y, x+sizevalue, y+sizevalue
+
+    def CreateCheese(self):
+        if self.cheeseamount > self.currentcheeses:
+            ptpc = randint(0, len(self.cheeseplaces)-1)
+            x = self.cheeseplaces[ptpc][0]
+            y = self.cheeseplaces[ptpc][1]
+            self.C.create_rectangle(self.getcoord(x,y), fill="yellow")
+            self.currentcheeses += 1
+            self.Map[x][y] = 1
+
+    def FoundCheese(self):
+        if self.Map[self.mouse[0]][self.mouse[1]] == 1: 
+            outputtext = f"Found Cheese at {self.mouse[0]} X {self.mouse[1]} Y"
+            self.cheeseeaten += 1
+            self.text.insert(INSERT, outputtext)
+            self.C.create_rectangle(self.getcoord(self.mouse[0], self.mouse[1]), fill="orange")
+            self.Map[self.mouse[0]][self.mouse[1]] = 0
+            self.energi += 10
+            self.currentcheeses-=1
     
     def step(self, action):
         time.sleep(self.speed)
@@ -78,6 +98,8 @@ class MouseEnv(gym.Env):
         dx = steps[0] * self.sizevalue
         dy = steps[1] * self.sizevalue
         self.C.move(self.Mouse, dx, dy)
+        self.CreateCheese()
+        self.FoundCheese()
         self.C.update()
 
         print("Step taken")
