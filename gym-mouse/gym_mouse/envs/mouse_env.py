@@ -8,14 +8,24 @@ master = Tk()
 import time
 from random import randint
 
+import numpy as np
+
 class MouseEnv(gym.Env):
     metadata = {'render.modes': ['human']}
 
     def __init__(self):
+        
+        self.action_space = spaces.Discrete(4)
+
+        self.observation_space = spaces.Discrete(1100)
+        self.reward = 0
+        self.episode_over = False
+    
+
         self.energi=50
         self.mouse= [1,2] 
         self.cheeseeaten=0
-        self.cheeseamount=10
+        self.cheeseamount=1
         self.currentcheeses=0
         self.cheeseplaces=[[3,3],[2,1],[4,5],[7,3],[2,8],[9,1],[5,7],[8,3],[4,1],[2,7],[5,4]]
         self.speed=0.2
@@ -75,26 +85,39 @@ class MouseEnv(gym.Env):
             self.Map[self.mouse[0]][self.mouse[1]] = 0
             self.energi += 10
             self.currentcheeses-=1
+            self.reward += 10
     
     def step(self, action):
+        self.takeAction(action)
+
+        mouse_pos = np.clip(self.mouse, 0, self.w*self.h)
+
+        return self.mouse, self.reward, self.episode_over
+
+    def takeAction(self, action):
         time.sleep(self.speed)
         steps = [0,0]
         if action == 0:
             if self.mouse[1] > 0:
                 self.mouse[1] = self.mouse[1]-1 #Uppåt
                 steps = [0,-1]
+            self.reward -=1
         elif action == 1:
             if self.mouse[1] < self.h-1:
                 self.mouse[1] = self.mouse[1]+1 #Nedåt
                 steps = [0,1]
+            self.reward -=1
         elif action == 2:
             if self.mouse[0] > 0:
                 self.mouse[0] = self.mouse[0]-1 #Vänster
                 steps = [-1,0]
+            self.reward -=1
         elif action == 3: 
             if self.mouse[0] < self.w-1:
                 self.mouse[0] = self.mouse[0]+1 #Höger  
                 steps = [1,0]
+            self.reward -=1
+
         dx = steps[0] * self.sizevalue
         dy = steps[1] * self.sizevalue
         self.C.move(self.Mouse, dx, dy)
@@ -103,6 +126,10 @@ class MouseEnv(gym.Env):
         self.FoundCheese()
 
         print("Step taken")
+        if self.energi == 0: 
+            self.reward -= 50
+            self.episode_over = True
+
 
     def render(self, mode="human"):
         print("Environment render")
