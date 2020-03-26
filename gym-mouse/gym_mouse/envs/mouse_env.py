@@ -23,20 +23,16 @@ class MouseEnv(gym.Env):
     
 
         self.energi=50
-        self.mouse= [1,2] 
+        self.mouse= [5,5] 
         self.cheeseeaten=0
         self.cheeseamount=1
         self.currentcheeses=0
         self.cheeseplaces=[[3,3],[2,1],[4,5],[7,3],[2,8],[9,1],[5,7],[8,3],[4,1],[2,7],[5,4]]
-        self.speed=0.2
+        self.speed= 1/60
 
         self.w = 10
         self.h = 10
         self.Map = [[0 for x in range(self.w)] for y in range(self.h)] 
-        self.food= 1
-        self.wall=2
-        self.Map[2][2]= self.food
-        self.Map[0][1]= self.wall
 
         self.C = Canvas(master, bg="green", height=600, width=600)
         self.C.pack()
@@ -55,7 +51,8 @@ class MouseEnv(gym.Env):
         self.text.pack()
 
         self.Mouse=self.C.create_rectangle(self.getcoord(self.mouse[0],self.mouse[1]), fill="brown")
-        
+        self.CreateCheese()
+
         print("Environment Init")
 
     def rs(self, inputval, sizevalue):
@@ -68,20 +65,27 @@ class MouseEnv(gym.Env):
         return x, y, x+sizevalue, y+sizevalue
 
     def CreateCheese(self):
+            ptpc = randint(0, len(self.cheeseplaces)-1)
+            self.cheeseX = self.cheeseplaces[ptpc][0]
+            self.cheeseY = self.cheeseplaces[ptpc][1]
+            self.cheesesprite = self.C.create_rectangle(self.getcoord(self.cheeseX,self.cheeseY), fill="yellow")
+            self.currentcheeses += 1
+            self.Map[self.cheeseX][self.cheeseY] = 1
+
+    def NewCheese(self):
         if self.cheeseamount > self.currentcheeses:
             ptpc = randint(0, len(self.cheeseplaces)-1)
-            x = self.cheeseplaces[ptpc][0]
-            y = self.cheeseplaces[ptpc][1]
-            self.C.create_rectangle(self.getcoord(x,y), fill="yellow")
+            self.cheeseX = self.cheeseplaces[ptpc][0]
+            self.cheeseY = self.cheeseplaces[ptpc][1]
+            self.C.coords(self.cheesesprite, self.getcoord(self.cheeseX, self.cheeseY))
             self.currentcheeses += 1
-            self.Map[x][y] = 1
+            self.Map[self.cheeseX][self.cheeseY] = 1
 
     def FoundCheese(self):
         if self.Map[self.mouse[0]][self.mouse[1]] == 1: 
             outputtext = f"Found Cheese at {self.mouse[0]} X {self.mouse[1]} Y"
             self.cheeseeaten += 1
             self.text.insert(INSERT, outputtext)
-            self.C.create_rectangle(self.getcoord(self.mouse[0], self.mouse[1]), fill="orange")
             self.Map[self.mouse[0]][self.mouse[1]] = 0
             self.energi += 10
             self.currentcheeses-=1
@@ -90,9 +94,11 @@ class MouseEnv(gym.Env):
     def step(self, action):
         self.takeAction(action)
 
-        mouse_pos = np.clip(self.mouse, 0, self.w*self.h)
+        mouse_pos = self.mouse[0] + self.mouse[1]*10
+        cheese_pos = self.cheeseplaces.index([self.cheeseX, self.cheeseY])
+        observation = cheese_pos*100 + mouse_pos
 
-        return self.mouse, self.reward, self.episode_over
+        return observation, self.reward, self.episode_over, self.cheeseeaten
 
     def takeAction(self, action):
         time.sleep(self.speed)
@@ -102,33 +108,42 @@ class MouseEnv(gym.Env):
                 self.mouse[1] = self.mouse[1]-1 #Uppåt
                 steps = [0,-1]
             self.reward -=1
+            self.energi -=1
         elif action == 1:
             if self.mouse[1] < self.h-1:
                 self.mouse[1] = self.mouse[1]+1 #Nedåt
                 steps = [0,1]
             self.reward -=1
+            self.energi -=1
         elif action == 2:
             if self.mouse[0] > 0:
                 self.mouse[0] = self.mouse[0]-1 #Vänster
                 steps = [-1,0]
             self.reward -=1
+            self.energi -=1
         elif action == 3: 
             if self.mouse[0] < self.w-1:
                 self.mouse[0] = self.mouse[0]+1 #Höger  
                 steps = [1,0]
             self.reward -=1
+            self.energi -=1
 
         dx = steps[0] * self.sizevalue
         dy = steps[1] * self.sizevalue
         self.C.move(self.Mouse, dx, dy)
-        self.CreateCheese()
+        self.NewCheese()
         self.C.update()
         self.FoundCheese()
+        
 
-        print("Step taken")
+        if self.cheeseeaten == 50:
+            self.episode_over = True
+
         if self.energi == 0: 
             self.reward -= 50
+            print(f"Episode over. You collected {self.cheeseeaten} cheeses")
             self.episode_over = True
+
 
 
     def render(self, mode="human"):
@@ -136,36 +151,21 @@ class MouseEnv(gym.Env):
         mainloop()
     
     def reset(self):
-        # self.C.delete("all")
-        # self.energi=50
-        # self.mouse= [1,2] 
-        # self.cheeseeaten=0
-        # self.cheeseamount=10
-        # self.currentcheeses=0
-        # self.cheeseplaces=[[3,3],[2,1],[4,5],[7,3],[2,8],[9,1],[5,7],[8,3],[4,1],[2,7],[5,4]]
-        # self.speed=0.2
+        self.reward = 0
+        self.episode_over = False
 
-        # self.w = 10
-        # self.h = 10
-        # self.Map = [[0 for x in range(self.w)] for y in range(self.h)] 
-        # self.food= 1
-        # self.wall=2
-        # self.Map[2][2]= self.food
-        # self.Map[0][1]= self.wall
+        self.energi=50
+        self.mouse= [5,5] 
+        self.cheeseeaten=0
+        self.cheeseamount=1
+        self.currentcheeses=0
 
-        # self.distanceY=0
-        # self.distanceX=0
-        # self.sizevalue=50
-        # for row in range(0,self.w): 
-        #     for col in range(0,self.h):
-        #         coord = self.distanceX, self.distanceY, self.distanceX+self.sizevalue, self.distanceY+self.sizevalue #y,x, w, h
-        #         self.distanceX+=self.sizevalue
-        #         self.C.create_rectangle(coord, fill="white")
-        #     self.distanceY+=self.sizevalue
-        #     self.distanceX=0
+        # self.
+        self.C.coords(self.Mouse, self.getcoord(self.mouse[0],self.mouse[1]))
+        self.NewCheese()
 
-        # self.text = Text(master, height=2, width=30)
-        # self.text.pack()
-
-        # self.Mouse=self.C.create_rectangle(self.getcoord(self.mouse[0],self.mouse[1]), fill="brown")
         print("Env reset")
+        
+        mouse_pos = self.mouse[0] + self.mouse[1]*10
+        
+        return mouse_pos, self.episode_over
