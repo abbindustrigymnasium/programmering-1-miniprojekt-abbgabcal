@@ -16,11 +16,9 @@ class MouseEnv(gym.Env):
     def __init__(self):
         
         self.action_space = spaces.Discrete(4)
-
         self.observation_space = spaces.Discrete(1100)
         self.reward = 0
         self.episode_over = False
-    
 
         self.energi=50
         self.mouse= [5,5] 
@@ -28,7 +26,7 @@ class MouseEnv(gym.Env):
         self.cheeseamount=1
         self.currentcheeses=0
         self.cheeseplaces=[[3,3],[2,1],[4,5],[7,3],[2,8],[9,1],[5,7],[8,3],[4,1],[2,7],[5,4]]
-        self.speed= 1/60
+        self.speed= 0
 
         self.w = 10
         self.h = 10
@@ -167,5 +165,7 @@ class MouseEnv(gym.Env):
         print("Env reset")
         
         mouse_pos = self.mouse[0] + self.mouse[1]*10
-        
-        return mouse_pos, self.episode_over
+        cheese_pos = self.cheeseplaces.index([self.cheeseX, self.cheeseY])
+        observation = cheese_pos*100 + mouse_pos
+
+        return observation, self.episode_over

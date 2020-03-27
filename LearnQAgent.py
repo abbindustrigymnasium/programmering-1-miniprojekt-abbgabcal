@@ -10,10 +10,10 @@ Q = np.zeros([env.observation_space.n, env.action_space.n])
 gamma = 0.7
 alpha = 0.5
 epsilon = 0.8
-epsilon_decay = 0.999
+epsilon_decay = 0.99999
 
 total_epochs = 0
-episodes = 5000
+episodes = 10000
 
 done = False
 cheesearray = []
@@ -37,15 +37,18 @@ for episode in range(episodes):
     cheesearray.append(info)
     print(cheesearray)
     print(episode)
+    if episode % 500 == 0:
+        df = pd.DataFrame(Q)
+        filepath = r"C:\Users\s9gabcal\OneDrive - ABB Industrigymnasium\Teknik\Code\Python\AI-lek\Musen\Excel.xls"
+        df.to_excel(f"{episode}_episodes.xlsx")
 
+df = pd.DataFrame(Q)
+df.to_excel(f"{episodes}_episodes.xlsx")
 
 print(f"Average cheese eaten: {np.mean(cheesearray)}")
 print(f"Average reward: {np.mean(rewardarray)}")
 
-df = pd.DataFrame(Q)
 
-filepath = r"C:\Users\s9gabcal\OneDrive - ABB Industrigymnasium\Teknik\Code\Python\AI-lek\Musen\Excel.xls"
-df.to_excel("pd.xlsx")
 
 env.render()
 
