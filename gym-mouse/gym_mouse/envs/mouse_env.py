@@ -26,7 +26,7 @@ class MouseEnv(gym.Env):
         self.cheeseamount=1
         self.currentcheeses=0
         self.cheeseplaces=[[3,3],[2,1],[4,5],[7,3],[2,8],[9,1],[5,7],[8,3],[4,1],[2,7],[5,4]]
-        self.speed= 0
+        self.speed= 0.2
 
         self.w = 10
         self.h = 10

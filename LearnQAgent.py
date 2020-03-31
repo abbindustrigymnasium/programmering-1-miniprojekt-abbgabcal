@@ -10,7 +10,7 @@ Q = np.zeros([env.observation_space.n, env.action_space.n])
 gamma = 0.7
 alpha = 0.5
 epsilon = 0.8
-epsilon_decay = 0.99999
+epsilon_decay = 0.99
 
 total_epochs = 0
 episodes = 10000

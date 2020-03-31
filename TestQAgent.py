@@ -5,7 +5,7 @@ import pandas as pd
 
 env = gym.make('gym_mouse.envs:mouse-v0')
 
-df = pd.read_excel(io=r'1_episodes.xlsx', index_col=0)
+df = pd.read_excel(io=r'10000_episodes.xlsx', index_col=0)
 Q = df.to_numpy()
 
 episodes = 100
