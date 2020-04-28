@@ -12,7 +12,7 @@ alpha = 0.5             #Alpha (learning rate) värde mellan 0 och 1 som bestäm
 epsilon = 0.8           #Epsilon (random) värde mellan 0 och 1 som bestämmer hur ofta ett slumpmässigt val ska göras för att potentiellt lära sig mera eller hitta ett bättre alternativ. 
 epsilon_decay = 0.99    #Epsilon_decay värde mellan 0 och 1 som bestämmer hur mycket epsilon ska minskas över tid. 
 
-episodes = 10000        #Antal gånger som AI:n ska spela spelet
+episodes = 5000        #Antal gånger som AI:n ska spela spelet
 
 done = False            #Variabel so mhåller koll på ifall spelet är över. 
 cheesearray = []        #Samling av antalet insamlade ostar för varje omgång för att kunna göra jämförelser. 

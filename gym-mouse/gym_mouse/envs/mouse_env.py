@@ -1,6 +1,5 @@
 import gym                  #imports av nödvändiga bibliotek. 
 from gym import spaces
-
 import time
 from random import randint
 
@@ -23,7 +22,7 @@ class MouseEnv(gym.Env):                        #Skapa klassen som innehåller h
         self.cheeseamount=1                                 #Antal ostar på planen, går att ändra men då krävs det att observation_space ändras. 
         self.currentcheeses=0                               #Antal ostar på planen just nu. 
         self.cheeseplaces=[[3,3],[2,1],[4,5],[7,3],[2,8],[9,1],[5,7],[8,3],[4,1],[2,7],[5,4]]   #Alla olika placeringar som en ost kan skapas på. 
-        self.speed= 0.2                                     #Uppdaterngshastighet, för inlärning rekommenderas 0 (snabbast möjliga), för testning 0.2 (möjligt att se vad som händer). 
+        self.speed= 1/30                                     #Uppdaterngshastighet, för inlärning rekommenderas 0 (snabbast möjliga), för testning 0.2 (möjligt att se vad som händer). 
 
         self.w = 10     #Planens bredd.
         self.h = 10     #Planens höjd.
@@ -82,7 +81,7 @@ class MouseEnv(gym.Env):                        #Skapa klassen som innehåller h
             self.cheeseeaten += 1
             self.text.insert(INSERT, outputtext)
             self.Map[self.mouse[0]][self.mouse[1]] = 0
-            self.energi += 10
+            self.energi += 15
             self.currentcheeses-=1
             self.reward += 10
     
@@ -130,7 +129,6 @@ class MouseEnv(gym.Env):                        #Skapa klassen som innehåller h
         self.C.update()
         self.FoundCheese()              #Kollar om musen har hittat en ost. 
         
-
         if self.cheeseeaten == 50:     #Om musen har samlat ihop 50 ostar avbryts omgången. Belöningen kan variera beroende på hur effektiv musen var. 
             self.episode_over = True
 
