@@ -1,14 +1,14 @@
-import gym
+import gym                      #Nödvändiga imports av bibliotek. 
 from random import randint
 import numpy as np
 import pandas as pd
 
-env = gym.make('gym_mouse.envs:mouse-v0')
+env = gym.make('gym_mouse.envs:mouse-v0')   #Ladda in miljön.
 
-df = pd.read_excel(io=r'10000_episodes.xlsx', index_col=0)
+df = pd.read_excel(io=r'5000_episodes.xlsx', index_col=0) #Ladda in Q-table från excel. Ändra siffrorna till den episod du önskar att testa. 
 Q = df.to_numpy()
 
-episodes = 100
+episodes = 100 #Antal episoder. 
 
 done = False
 cheesearray = []
@@ -28,8 +28,8 @@ for episode in range(episodes):
     print(cheesearray)
     print(episode)
 
-print(f"Average cheese eaten: {np.mean(cheesearray)}")
-print(f"Average reward: {np.mean(rewardarray)}")
+print(f"Average cheese eaten: {np.mean(cheesearray)}")  #Snitt på hur många ostar som musen lyckas äta. 
+print(f"Average reward: {np.mean(rewardarray)}")        #Snitt på belöning. Högre är bättre. 
 
 
 
