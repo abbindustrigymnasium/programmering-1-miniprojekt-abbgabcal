@@ -1,14 +1,11 @@
 import gym
-from gym import error, spaces, utils
-from gym.utils import seeding
-
-from tkinter import *
-master = Tk()
+from gym import spaces
 
 import time
 from random import randint
 
-import numpy as np
+from tkinter import *
+master = Tk()
 
 class MouseEnv(gym.Env):
     metadata = {'render.modes': ['human']}
@@ -142,8 +139,6 @@ class MouseEnv(gym.Env):
             print(f"Episode over. You collected {self.cheeseeaten} cheeses")
             self.episode_over = True
 
-
-
     def render(self, mode="human"):
         print("Environment render")
         mainloop()
@@ -158,7 +153,6 @@ class MouseEnv(gym.Env):
         self.cheeseamount=1
         self.currentcheeses=0
 
-        # self.
         self.C.coords(self.Mouse, self.getcoord(self.mouse[0],self.mouse[1]))
         self.NewCheese()
 
