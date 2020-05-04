@@ -40,5 +40,5 @@ Det här projektet går ut på att vidareutveckla Joakims AI-mus till att använ
 Under projektet har jag lärt mig väldigt mycket om hur machine learning fungerar i allmänhet och Q-learning i synnerhet. Jag har även lär mig en del om hur man kan skapa grafiska saker i python med tkinter och även en del om hur klasser fungerar i python. För att bygga vidare på projektet hade man kunnat försöka skapa ett program där Ai:n fortfarande hade kunnat köras men med flera ostar samtidigt som i Joakims ursprungliga program. Det går även att ändra på machine learning-delen i projektet genom att prova något annat än Q-learning eller genom att kombinera Q-learning med till exempel Tensorflow. 
 
 ## AI i arbete
-AI:n i arbete efter att ha tränat i 5000 episoder. Alltså spelat 5000 omgångar av spelet. 
+AI:n i arbete efter att ha tränat i 5000 episoder. Alltså spelat 5000 omgångar av spelet. <br/>
 ![Alt Text](https://media.giphy.com/media/chKLhZbas6WxWspKdK/giphy.gif)
