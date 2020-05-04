@@ -8,7 +8,7 @@ Skriv sedan i terminalen för `gym-mouse`:
 pip install -e .
 ```
 ### Testfiler
-För att ni ska kunna se resultatet av att Q-learningalgoritmen lärt sig utan att behöva ta tiden till att lära in den själva har jag inkluderat excelfiler som motsvarar Q-tables för var femhundrade generation upp till 5000.<br/>
+För att ni ska kunna se resultatet av det som Q-learningalgoritmen har lärt sig utan att behöva ta tiden till att lära in den själva har jag inkluderat excelfiler som motsvarar Q-tables för var femhundrade generation upp till 5000.<br/>
 För att testa någon av de här generationerna öppna `TestQAgent.py` och ändra i följande rad till den gengeration som du önksar att testa.  
 ```python
 df = pd.read_excel(io=r'5000_episodes.xlsx', index_col=0)
